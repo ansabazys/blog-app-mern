@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename); // get the name of the directory
 app.use(express.json())
 app.use(cookieParser())
 app.use("/images", express.static(path.join(__dirname,"/images")))
-app.use(cors({origin: "https://blog-app-mern-lime.vercel.app/", credentials: true}))
+app.use(cors({origin: "", credentials: true}))
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/posts', postRoutes)
