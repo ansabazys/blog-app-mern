@@ -1,52 +1,87 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   IoPersonOutline,
   IoFolderOutline,
   IoLogOutOutline,
   IoPencilOutline,
 } from "react-icons/io5";
+import { UserContext } from "../context/UserContext";
+import axios from "axios";
+import { URL } from "../../url";
 
 const Menu = () => {
-  const user = true;
+  const { setUser } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleLogOut = async () => {
+    try {
+      const res = await axios.get(URL + "/api/auth/logout", {
+        withCredentials: true,
+      });
+      console.log(res);
+      setUser(null);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const { user } = useContext(UserContext);
   return (
-    <div className="bg-white border rounded-[0.5rem] px-3  border-gray-300 absolute top-12 right-3 w-40">
+    <div className="bg-white border rounded-[0.5rem] px-3 shadow-md border-gray-300 absolute top-14 right-3 w-40">
       <ul>
         {!user && (
-          <li>
-            <Link to={"/"}>Login</Link>
-          </li>
+          <Link
+            to={"/login"}
+            className="py-2 border-b border-b-gray-300 flex md:hidden items-center gap-2"
+          >
+            <IoPencilOutline />
+            Login
+          </Link>
         )}
         {!user && (
-          <li>
-            <Link to={"/"}>Register</Link>
-          </li>
-        )}
-
-        {user && (
-          <li className="py-2 border-b border-b-gray-300 flex md:hidden items-center gap-2">
+          <Link
+            to={"/login"}
+            className="py-2 border-b border-b-gray-300 flex md:hidden items-center gap-2"
+          >
             <IoPencilOutline />
-            <Link to={"/login"}>Write</Link>
-          </li>
+            Register
+          </Link>
+        )}
+        {user && (
+          <Link
+            to={"/create"}
+            className="py-2 border-b border-b-gray-300 flex md:hidden items-center gap-2"
+          >
+            <IoPencilOutline />
+            Write
+          </Link>
         )}
 
         {user && (
-          <li className="py-2 border-b border-b-gray-300 flex items-center gap-2">
+          <Link
+            to={"/posts/user/" + user.id}
+            className="py-2 border-b border-b-gray-300 flex items-center gap-2"
+          >
             <IoFolderOutline />
-            <Link to={"/login"}>My blogs</Link>
-          </li>
+            My blogs
+          </Link>
         )}
 
         {user && (
-          <li className="py-2 border-b border-b-gray-300 flex items-center gap-2">
+          <Link
+            to={"/profile/33"}
+            className="py-2 border-b border-b-gray-300 flex items-center gap-2"
+          >
             <IoPersonOutline />
-            <Link to={"/login"}>Profile</Link>
-          </li>
+            Profile
+          </Link>
         )}
         {user && (
-          <li className="py-2 flex items-center gap-2">
+          <li onClick={handleLogOut} className="py-2 flex items-center gap-2">
             <IoLogOutOutline />
-            <Link to={"/login"}>Log out</Link>
+            Log out
           </li>
         )}
       </ul>

@@ -6,19 +6,20 @@ import { URL } from "../../url";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
-const Home = () => {
+const MyBlogs = () => {
   const [posts, setPosts] = useState([]);
   const [noResult, setNoResult] = useState(false);
   const [loader, setLoader] = useState(false)
 
   const { search } = useLocation();
 
+  
   const { user } = useContext(UserContext);
 
   const getPost = async () => {
     setLoader(true)
     try {
-      const response = await axios.get(URL + "/api/posts/" + search);
+      const response = await axios.get(URL + "/api/posts/user/"+user.id + search);
       setPosts(response.data);
       response.data.length === 0 ? setNoResult(true) : setNoResult(false);
       setLoader(false)
@@ -29,7 +30,7 @@ const Home = () => {
 
   useEffect(() => {
     getPost();
-  }, [search]);
+  }, [search, user]);
 
   const navigate = useNavigate();
 
@@ -37,9 +38,12 @@ const Home = () => {
     <>
       <Navbar />
       <div className="w-full gap-7 flex flex-col items-center justify-center my-14">
+        <div className="w-3/5">
+            <h1 className="text-4xl font-semibold tracking-tighter">My blogs</h1>
+        </div>
         {loader ? <p>Loading</p> : !noResult ? (
-          posts?.map((posts) => (
-            <div  key={posts._id}  className="w-full flex justify-center">
+          posts.map((posts) => (
+            <div className="w-full flex justify-center">
               <div
                 className="md:w-3/5 w-full flex justify-center cursor-pointer"
                 onClick={() =>
@@ -48,7 +52,7 @@ const Home = () => {
                     : navigate("/login")
                 }
               >
-                <Post posts={posts} />
+                <Post key={posts._id} posts={posts} />
               </div>
             </div>
           ))
@@ -60,4 +64,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default MyBlogs;
